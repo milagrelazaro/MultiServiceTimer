@@ -1,6 +1,4 @@
-import { ServiceType } from '../types';
-
-export const SERVICE_TYPES: { value: ServiceType; label: string; icon: string; color: string }[] = [
+export const SERVICE_TYPES = [
   { value: 'eletrica', label: 'Elétrica', icon: '⚡', color: '#FFB800' },
   { value: 'frio', label: 'Frio e Climatização', icon: '❄️', color: '#00BFFF' },
   { value: 'redes', label: 'Redes', icon: '🌐', color: '#4CAF50' },
@@ -17,7 +15,7 @@ export const PRIORITIES = [
   { value: 'urgent', label: 'Urgente', color: '#D32F2F' },
 ];
 
-export const DEFAULT_HOURLY_RATES: Record<ServiceType, number> = {
+export const DEFAULT_HOURLY_RATES = {
   eletrica: 5000,
   frio: 6000,
   redes: 4000,

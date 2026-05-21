@@ -1,6 +1,4 @@
-import { Activity } from '../types';
-
-export const formatTime = (seconds: number): string => {
+export const formatTime = (seconds) => {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
@@ -11,7 +9,7 @@ export const formatTime = (seconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 };
 
-export const calculateElapsedTime = (activity: Activity): number => {
+export const calculateElapsedTime = (activity) => {
   if (!activity.startedAt) return 0;
 
   const now = Date.now();
@@ -28,21 +26,21 @@ export const calculateElapsedTime = (activity: Activity): number => {
   return Math.max(0, Math.floor(elapsed));
 };
 
-export const calculateTotalTime = (activity: Activity): number => {
+export const calculateTotalTime = (activity) => {
   if (activity.status === 'completed' && activity.completedAt && activity.startedAt) {
     return Math.floor((activity.completedAt - activity.startedAt - activity.totalPausedTime) / 1000);
   }
   return calculateElapsedTime(activity);
 };
 
-export const formatCurrency = (value: number): string => {
+export const formatCurrency = (value) => {
   return new Intl.NumberFormat('pt-MZ', {
     style: 'currency',
     currency: 'MZN',
   }).format(value);
 };
 
-export const formatDate = (timestamp: number): string => {
+export const formatDate = (timestamp) => {
   return new Intl.DateTimeFormat('pt-MZ', {
     day: '2-digit',
     month: '2-digit',
@@ -52,7 +50,7 @@ export const formatDate = (timestamp: number): string => {
   }).format(new Date(timestamp));
 };
 
-export const formatShortDate = (timestamp: number): string => {
+export const formatShortDate = (timestamp) => {
   return new Intl.DateTimeFormat('pt-MZ', {
     day: '2-digit',
     month: '2-digit',

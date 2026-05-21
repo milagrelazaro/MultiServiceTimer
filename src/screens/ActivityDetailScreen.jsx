@@ -14,16 +14,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS } from '../constants';
 import { formatTime, calculateElapsedTime, formatCurrency, formatDate, calculateTotalTime } from '../utils/timer';
-import { Material } from '../types';
 
-const ActivityDetailScreen = ({ route, navigation }: any) => {
+const ActivityDetailScreen = ({ route, navigation }) => {
   const { activityId } = route.params;
   const { activities, updateActivity, pauseActivity, resumeActivity, completeActivity, deleteActivity } = useActivities();
   const [activity, setActivity] = useState(activities.find(a => a.id === activityId));
   const [elapsedTime, setElapsedTime] = useState(0);
   const [solutions, setSolutions] = useState(activity?.solutions || '');
   const [issues, setIssues] = useState(activity?.issues || '');
-  const [materials, setMaterials] = useState<Material[]>(activity?.materials || []);
+  const [materials, setMaterials] = useState(activity?.materials || []);
   const [newMaterialName, setNewMaterialName] = useState('');
   const [newMaterialQty, setNewMaterialQty] = useState('');
   const [newMaterialCost, setNewMaterialCost] = useState('');
@@ -97,7 +96,7 @@ const ActivityDetailScreen = ({ route, navigation }: any) => {
       return;
     }
 
-    const newMaterial: Material = {
+    const newMaterial = {
       id: Date.now().toString(),
       name: newMaterialName,
       quantity: parseFloat(newMaterialQty) || 1,
@@ -110,7 +109,7 @@ const ActivityDetailScreen = ({ route, navigation }: any) => {
     setNewMaterialCost('');
   };
 
-  const removeMaterial = (id: string) => {
+  const removeMaterial = (id) => {
     setMaterials(materials.filter(m => m.id !== id));
   };
 
@@ -373,8 +372,8 @@ const ActivityDetailScreen = ({ route, navigation }: any) => {
   );
 };
 
-const getServiceIcon = (type: string): string => {
-  const icons: Record<string, string> = {
+const getServiceIcon = (type) => {
+  const icons = {
     eletrica: '⚡',
     frio: '❄️',
     redes: '🌐',
@@ -386,8 +385,8 @@ const getServiceIcon = (type: string): string => {
   return icons[type] || '🔧';
 };
 
-const getServiceLabel = (type: string): string => {
-  const labels: Record<string, string> = {
+const getServiceLabel = (type) => {
+  const labels = {
     eletrica: 'Elétrica',
     frio: 'Frio',
     redes: 'Redes',
@@ -399,8 +398,8 @@ const getServiceLabel = (type: string): string => {
   return labels[type] || 'Outro';
 };
 
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
+const getStatusColor = (status) => {
+  const colors = {
     pending: COLORS.textSecondary,
     in_progress: COLORS.success,
     paused: COLORS.warning,
@@ -409,8 +408,8 @@ const getStatusColor = (status: string): string => {
   return colors[status] || COLORS.textSecondary;
 };
 
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
+const getStatusText = (status) => {
+  const texts = {
     pending: 'Pendente',
     in_progress: 'Em andamento',
     paused: 'Pausada',
@@ -419,8 +418,8 @@ const getStatusText = (status: string): string => {
   return texts[status] || status;
 };
 
-const getPriorityColor = (priority: string): string => {
-  const colors: Record<string, string> = {
+const getPriorityColor = (priority) => {
+  const colors = {
     low: COLORS.success,
     medium: COLORS.warning,
     high: COLORS.danger,
@@ -429,8 +428,8 @@ const getPriorityColor = (priority: string): string => {
   return colors[priority] || COLORS.textSecondary;
 };
 
-const getPriorityLabel = (priority: string): string => {
-  const labels: Record<string, string> = {
+const getPriorityLabel = (priority) => {
+  const labels = {
     low: 'Baixa',
     medium: 'Média',
     high: 'Alta',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
-import { Client } from '../types';
 import { STORAGE_KEYS } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ClientsScreen = () => {
-  const [clients, setClients] = useState<Client[]>([]);
+  const [clients, setClients] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [newClient, setNewClient] = useState({
@@ -40,11 +39,11 @@ const ClientsScreen = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadClients();
   }, []);
 
-  const saveClients = async (newClients: Client[]) => {
+  const saveClients = async (newClients) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(newClients));
       setClients(newClients);
@@ -59,7 +58,7 @@ const ClientsScreen = () => {
       return;
     }
 
-    const client: Client = {
+    const client = {
       id: Date.now().toString(),
       name: newClient.name.trim(),
       phone: newClient.phone.trim(),
@@ -74,7 +73,7 @@ const ClientsScreen = () => {
     setNewClient({ name: '', phone: '', email: '', address: '', notes: '' });
   };
 
-  const handleDeleteClient = (id: string) => {
+  const handleDeleteClient = (id) => {
     Alert.alert(
       'Confirmar',
       'Tem certeza que deseja apagar este cliente?',

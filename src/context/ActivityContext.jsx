@@ -1,27 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Activity, ActivityStatus, Pause } from '../types';
-import { STORAGE_KEYS } from '../constants';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEYS } from '../constants';
 
-interface ActivityContextType {
-  activities: Activity[];
-  currentActivity: Activity | null;
-  addActivity: (activity: Omit<Activity, 'id' | 'createdAt' | 'totalPausedTime' | 'pauses' | 'materials' | 'photos' | 'isPaid'>) => Promise<void>;
-  updateActivity: (id: string, updates: Partial<Activity>) => Promise<void>;
-  deleteActivity: (id: string) => Promise<void>;
-  startActivity: (activity: Activity) => Promise<void>;
-  pauseActivity: (activityId: string) => Promise<void>;
-  resumeActivity: (activityId: string) => Promise<void>;
-  completeActivity: (activityId: string) => Promise<void>;
-  loadActivities: () => Promise<void>;
-  loadCurrentActivity: () => Promise<void>;
-}
+const ActivityContext = createContext(undefined);
 
-const ActivityContext = createContext<ActivityContextType | undefined>(undefined);
-
-export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
+export const ActivityProvider = ({ children }) => {
+  const [activities, setActivities] = useState([]);
+  const [currentActivity, setCurrentActivity] = useState(null);
 
   const loadActivities = async () => {
     try {
@@ -45,7 +30,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const saveActivities = async (newActivities: Activity[]) => {
+  const saveActivities = async (newActivities) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.ACTIVITIES, JSON.stringify(newActivities));
       setActivities(newActivities);
@@ -54,7 +39,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const saveCurrentActivity = async (activity: Activity | null) => {
+  const saveCurrentActivity = async (activity) => {
     try {
       if (activity) {
         await AsyncStorage.setItem(STORAGE_KEYS.CURRENT_ACTIVITY, JSON.stringify(activity));
@@ -67,8 +52,8 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const addActivity = async (activityData: Omit<Activity, 'id' | 'createdAt' | 'totalPausedTime' | 'pauses' | 'materials' | 'photos' | 'isPaid'>) => {
-    const newActivity: Activity = {
+  const addActivity = async (activityData) => {
+    const newActivity = {
       ...activityData,
       id: Date.now().toString(),
       createdAt: Date.now(),
@@ -87,7 +72,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const updateActivity = async (id: string, updates: Partial<Activity>) => {
+  const updateActivity = async (id, updates) => {
     const newActivities = activities.map(act => 
       act.id === id ? { ...act, ...updates } : act
     );
@@ -98,7 +83,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const deleteActivity = async (id: string) => {
+  const deleteActivity = async (id) => {
     const newActivities = activities.filter(act => act.id !== id);
     await saveActivities(newActivities);
     
@@ -107,10 +92,10 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  const startActivity = async (activity: Activity) => {
-    const updatedActivity: Activity = {
+  const startActivity = async (activity) => {
+    const updatedActivity = {
       ...activity,
-      status: 'in_progress' as ActivityStatus,
+      status: 'in_progress',
       startedAt: Date.now(),
     };
     
@@ -118,14 +103,14 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     await saveCurrentActivity(updatedActivity);
   };
 
-  const pauseActivity = async (activityId: string) => {
+  const pauseActivity = async (activityId) => {
     const activity = activities.find(a => a.id === activityId);
     if (!activity || activity.status !== 'in_progress') return;
 
-    const newPause: Pause = { start: Date.now() };
-    const updatedActivity: Activity = {
+    const newPause = { start: Date.now() };
+    const updatedActivity = {
       ...activity,
-      status: 'paused' as ActivityStatus,
+      status: 'paused',
       pauses: [...activity.pauses, newPause],
     };
     
@@ -133,7 +118,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     await saveCurrentActivity(updatedActivity);
   };
 
-  const resumeActivity = async (activityId: string) => {
+  const resumeActivity = async (activityId) => {
     const activity = activities.find(a => a.id === activityId);
     if (!activity || activity.status !== 'paused') return;
 
@@ -141,9 +126,9 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (!lastPause || lastPause.end) return;
 
     const pauseDuration = Date.now() - lastPause.start;
-    const updatedActivity: Activity = {
+    const updatedActivity = {
       ...activity,
-      status: 'in_progress' as ActivityStatus,
+      status: 'in_progress',
       totalPausedTime: activity.totalPausedTime + pauseDuration,
       pauses: activity.pauses.map((p, i) => 
         i === activity.pauses.length - 1 ? { ...p, end: Date.now() } : p
@@ -154,7 +139,7 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     await saveCurrentActivity(updatedActivity);
   };
 
-  const completeActivity = async (activityId: string) => {
+  const completeActivity = async (activityId) => {
     const activity = activities.find(a => a.id === activityId);
     if (!activity) return;
 
@@ -175,9 +160,9 @@ export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }
     const totalTime = activity.startedAt ? (completedAt - activity.startedAt - totalPausedTime) / 1000 : 0;
     const totalCost = totalTime * activity.hourlyRate;
 
-    const updatedActivity: Activity = {
+    const updatedActivity = {
       ...activity,
-      status: 'completed' as ActivityStatus,
+      status: 'completed',
       completedAt,
       totalPausedTime,
       pauses,

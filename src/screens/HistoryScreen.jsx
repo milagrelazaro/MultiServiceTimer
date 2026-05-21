@@ -12,12 +12,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS } from '../constants';
 import { formatCurrency, formatShortDate, formatTime, calculateTotalTime } from '../utils/timer';
-import { Activity, ActivityStatus, ServiceType } from '../types';
 
-const HistoryScreen = ({ navigation }: any) => {
+const HistoryScreen = ({ navigation }) => {
   const { activities } = useActivities();
-  const [filter, setFilter] = useState<'all' | ActivityStatus>('all');
-  const [serviceFilter, setServiceFilter] = useState<ServiceType | 'all'>('all');
+  const [filter, setFilter] = useState('all');
+  const [serviceFilter, setServiceFilter] = useState('all');
 
   const filteredActivities = activities.filter(activity => {
     if (filter !== 'all' && activity.status !== filter) return false;
@@ -202,8 +201,8 @@ const HistoryScreen = ({ navigation }: any) => {
   );
 };
 
-const getServiceIcon = (type: string): string => {
-  const icons: Record<string, string> = {
+const getServiceIcon = (type) => {
+  const icons = {
     eletrica: '⚡',
     frio: '❄️',
     redes: '🌐',
@@ -215,8 +214,8 @@ const getServiceIcon = (type: string): string => {
   return icons[type] || '🔧';
 };
 
-const getServiceLabel = (type: string): string => {
-  const labels: Record<string, string> = {
+const getServiceLabel = (type) => {
+  const labels = {
     eletrica: 'Elétrica',
     frio: 'Frio',
     redes: 'Redes',
@@ -228,8 +227,8 @@ const getServiceLabel = (type: string): string => {
   return labels[type] || 'Outro';
 };
 
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
+const getStatusColor = (status) => {
+  const colors = {
     pending: COLORS.textSecondary,
     in_progress: COLORS.success,
     paused: COLORS.warning,
@@ -238,8 +237,8 @@ const getStatusColor = (status: string): string => {
   return colors[status] || COLORS.textSecondary;
 };
 
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
+const getStatusText = (status) => {
+  const texts = {
     pending: 'Pendente',
     in_progress: 'Em andamento',
     paused: 'Pausada',

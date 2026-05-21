@@ -12,9 +12,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS } from '../constants';
 import { formatTime, calculateElapsedTime, formatCurrency } from '../utils/timer';
-import { Activity } from '../types';
 
-const DashboardScreen = ({ navigation }: any) => {
+const DashboardScreen = ({ navigation }) => {
   const { currentActivity, activities, pauseActivity, resumeActivity, completeActivity } = useActivities();
   const [elapsedTime, setElapsedTime] = useState(0);
 
@@ -234,8 +233,8 @@ const DashboardScreen = ({ navigation }: any) => {
   );
 };
 
-const getServiceIcon = (type: string): string => {
-  const icons: Record<string, string> = {
+const getServiceIcon = (type) => {
+  const icons = {
     eletrica: '⚡',
     frio: '❄️',
     redes: '🌐',
@@ -247,8 +246,8 @@ const getServiceIcon = (type: string): string => {
   return icons[type] || '🔧';
 };
 
-const getServiceLabel = (type: string): string => {
-  const labels: Record<string, string> = {
+const getServiceLabel = (type) => {
+  const labels = {
     eletrica: 'Elétrica',
     frio: 'Frio',
     redes: 'Redes',
@@ -260,8 +259,8 @@ const getServiceLabel = (type: string): string => {
   return labels[type] || 'Outro';
 };
 
-const getStatusColor = (status: string): string => {
-  const colors: Record<string, string> = {
+const getStatusColor = (status) => {
+  const colors = {
     pending: COLORS.textSecondary,
     in_progress: COLORS.success,
     paused: COLORS.warning,
@@ -270,8 +269,8 @@ const getStatusColor = (status: string): string => {
   return colors[status] || COLORS.textSecondary;
 };
 
-const getStatusText = (status: string): string => {
-  const texts: Record<string, string> = {
+const getStatusText = (status) => {
+  const texts = {
     pending: 'Pendente',
     in_progress: 'Em andamento',
     paused: 'Pausada',

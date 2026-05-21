@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
 
-// Screens (serão criados depois)
+// Screens
 import DashboardScreen from '../screens/DashboardScreen';
 import NewActivityScreen from '../screens/NewActivityScreen';
 import ActivityDetailScreen from '../screens/ActivityDetailScreen';
@@ -20,7 +20,7 @@ const MainTabs = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap;
+          let iconName;
 
           if (route.name === 'Dashboard') {
             iconName = focused ? 'home' : 'home-outline';

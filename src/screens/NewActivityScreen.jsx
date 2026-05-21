@@ -13,12 +13,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS, SERVICE_TYPES, PRIORITIES, DEFAULT_HOURLY_RATES } from '../constants';
-import { ServiceType, Priority } from '../types';
 
-const NewActivityScreen = ({ navigation }: any) => {
+const NewActivityScreen = ({ navigation }) => {
   const { addActivity } = useActivities();
-  const [serviceType, setServiceType] = useState<ServiceType>('eletrica');
-  const [priority, setPriority] = useState<Priority>('medium');
+  const [serviceType, setServiceType] = useState('eletrica');
+  const [priority, setPriority] = useState('medium');
   const [clientName, setClientName] = useState('');
   const [description, setDescription] = useState('');
   const [estimatedBudget, setEstimatedBudget] = useState('');
@@ -92,7 +91,7 @@ const NewActivityScreen = ({ navigation }: any) => {
                     priority === prio.value && styles.priorityCardActive,
                     { backgroundColor: priority === prio.value ? prio.color : COLORS.card }
                   ]}
-                  onPress={() => setPriority(prio.value as Priority)}
+                  onPress={() => setPriority(prio.value)}
                 >
                   <Text style={[
                     styles.priorityLabel,
