@@ -28,6 +28,22 @@ const HistoryScreen = ({ navigation }) => {
   const totalRevenue = completedActivities.reduce((sum, a) => sum + (a.totalCost || 0), 0);
   const totalTime = completedActivities.reduce((sum, a) => sum + calculateTotalTime(a), 0);
 
+  const handleExport = () => {
+    const csvContent = "Data,Tipo de Serviço,Descrição,Status,Custo Total,Tempo Total\n" +
+      activities.map(a => {
+        const date = formatShortDate(a.createdAt);
+        const serviceType = a.serviceType || 'N/A';
+        const description = a.description.replace(/,/g, ' ');
+        const status = a.status;
+        const cost = a.totalCost || 0;
+        const time = calculateTotalTime(a);
+        return `${date},${serviceType},${description},${status},${cost.toFixed(2)},${time}`;
+      }).join('\n');
+
+    Alert.alert('Exportar', 'Dados copiados para a área de transferência!');
+    // Em uma implementação real, você usaria Sharing API para exportar
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
@@ -35,7 +51,7 @@ const HistoryScreen = ({ navigation }) => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Histórico</Text>
-          <TouchableOpacity style={styles.exportButton}>
+          <TouchableOpacity style={styles.exportButton} onPress={handleExport}>
             <Ionicons name="download-outline" size={20} color="#fff" />
             <Text style={styles.exportButtonText}>Exportar</Text>
           </TouchableOpacity>

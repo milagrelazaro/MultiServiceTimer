@@ -11,6 +11,7 @@ import NewActivityScreen from '../screens/NewActivityScreen';
 import ActivityDetailScreen from '../screens/ActivityDetailScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import ClientsScreen from '../screens/ClientsScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,6 +29,8 @@ const MainTabs = () => {
             iconName = focused ? 'list' : 'list-outline';
           } else if (route.name === 'Clients') {
             iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'settings' : 'settings-outline';
           } else {
             iconName = 'ellipse';
           }
@@ -66,6 +69,11 @@ const MainTabs = () => {
         name="Clients" 
         component={ClientsScreen} 
         options={{ title: 'Clientes' }}
+      />
+      <Tab.Screen 
+        name="Settings" 
+        component={SettingsScreen} 
+        options={{ title: 'Configurações' }}
       />
     </Tab.Navigator>
   );
