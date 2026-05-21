@@ -55,8 +55,6 @@ const NewActivityScreen = ({ navigation }) => {
       <ScrollView 
         style={styles.scrollView} 
         contentContainerStyle={styles.scrollContent}
-        scrollEnabled={true}
-        nestedScrollEnabled={true}
       >
         <View style={styles.content}>
           <Text style={styles.title}>Nova Atividade</Text>
@@ -188,6 +186,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    ...Platform.select({
+      web: {
+        minHeight: '100vh',
+      },
+      default: {},
+    }),
   },
   scrollContent: {
     flexGrow: 1,
