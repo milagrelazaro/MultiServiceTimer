@@ -3,7 +3,6 @@
     "version": ">= 18.13.1",
     "appVersionSource": "local"
   },
-  "projectId": "b3e69af8-cf3d-4f54-966a-3f45e85f5b1c",
   "build": {
     "development": {
       "developmentClient": true,
