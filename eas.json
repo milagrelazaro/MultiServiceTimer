@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 18.13.1",
+    "appVersionSource": "local"
+  },
+  "projectId": "b3e69af8-cf3d-4f54-966a-3f45e85f5b1c",
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
