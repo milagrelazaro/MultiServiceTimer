@@ -158,7 +158,7 @@ export const ActivityProvider = ({ children }) => {
 
     const completedAt = Date.now();
     const totalTime = activity.startedAt ? (completedAt - activity.startedAt - totalPausedTime) / 1000 : 0;
-    const totalCost = totalTime * activity.hourlyRate;
+    const totalCost = (totalTime / 3600) * activity.hourlyRate; // Converter segundos para horas
 
     const updatedActivity = {
       ...activity,
