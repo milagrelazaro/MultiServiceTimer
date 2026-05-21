@@ -457,7 +457,13 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    height: Platform.OS === 'web' ? height - 50 : undefined,
+    ...Platform.select({
+      web: {
+        height: '100vh',
+        overflow: 'auto',
+      },
+      default: {},
+    }),
   },
   scrollContent: {
     flexGrow: 1,

@@ -52,7 +52,12 @@ const NewActivityScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.scrollContent}
+        scrollEnabled={true}
+        nestedScrollEnabled={true}
+      >
         <View style={styles.content}>
           <Text style={styles.title}>Nova Atividade</Text>
           <Text style={styles.subtitle}>Preencha os detalhes da atividade</Text>
@@ -183,7 +188,13 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    height: Platform.OS === 'web' ? height - 50 : undefined,
+    ...Platform.select({
+      web: {
+        height: '100vh',
+        overflow: 'auto',
+      },
+      default: {},
+    }),
   },
   scrollContent: {
     flexGrow: 1,
