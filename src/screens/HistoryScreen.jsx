@@ -28,6 +28,18 @@ const HistoryScreen = ({ navigation }) => {
   const totalRevenue = completedActivities.reduce((sum, a) => sum + (a.totalCost || 0), 0);
   const totalTime = completedActivities.reduce((sum, a) => sum + calculateTotalTime(a), 0);
 
+  // Dados para gráficos
+  const serviceStats = activities.reduce((acc, act) => {
+    if (!acc[act.serviceType]) {
+      acc[act.serviceType] = { count: 0, revenue: 0 };
+    }
+    acc[act.serviceType].count += 1;
+    acc[act.serviceType].revenue += act.totalCost || 0;
+    return acc;
+  }, {});
+
+  const maxRevenue = Math.max(...Object.values(serviceStats).map(s => s.revenue), 1);
+
   const handleExport = () => {
     const csvContent = "Data,Tipo de Serviço,Descrição,Status,Custo Total,Tempo Total\n" +
       activities.map(a => {
@@ -157,6 +169,35 @@ const HistoryScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           </ScrollView>
+        </View>
+
+        {/* Gráfico de Receita por Serviço */}
+        <View style={styles.chartSection}>
+          <Text style={styles.chartTitle}>Receita por Serviço</Text>
+          <View style={styles.chartContainer}>
+            {Object.entries(serviceStats).map(([service, data]) => {
+              const percentage = (data.revenue / maxRevenue) * 100;
+              const icons = {
+                eletrica: '⚡',
+                frio: '❄️',
+                redes: '🌐',
+                cameras: '📹',
+                hidraulica: '💧',
+              };
+              return (
+                <View key={service} style={styles.chartBarContainer}>
+                  <View style={styles.chartBarLabel}>
+                    <Text style={styles.chartBarIcon}>{icons[service] || '📋'}</Text>
+                    <Text style={styles.chartBarName}>{service}</Text>
+                  </View>
+                  <View style={styles.chartBarTrack}>
+                    <View style={[styles.chartBarFill, { width: `${percentage}%` }]} />
+                  </View>
+                  <Text style={styles.chartBarValue}>{formatCurrency(data.revenue)}</Text>
+                </View>
+              );
+            })}
+          </View>
         </View>
 
         {/* Activities List */}
@@ -446,6 +487,60 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: 'center',
     paddingVertical: 60,
+  },
+  chartSection: {
+    padding: 16,
+    paddingTop: 0,
+  },
+  chartTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: 12,
+  },
+  chartContainer: {
+    backgroundColor: COLORS.card,
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  chartBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  chartBarLabel: {
+    width: 80,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  chartBarIcon: {
+    fontSize: 16,
+  },
+  chartBarName: {
+    fontSize: 12,
+    color: COLORS.text,
+    textTransform: 'capitalize',
+  },
+  chartBarTrack: {
+    flex: 1,
+    height: 8,
+    backgroundColor: COLORS.border,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  chartBarFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+    borderRadius: 4,
+  },
+  chartBarValue: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.text,
+    width: 60,
+    textAlign: 'right',
   },
   emptyText: {
     fontSize: 16,
