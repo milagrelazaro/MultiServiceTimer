@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.multiservicetimer.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -29,6 +30,12 @@
       "meta": {
         "viewport": "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
       }
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b3e69af8-cf3d-4f54-966a-3f45e85f5b1c"
+      }
+    },
+    "owner": "sixmc"
   }
 }
