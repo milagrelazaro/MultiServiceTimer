@@ -117,6 +117,14 @@ const ActivityDetailScreen = ({ route, navigation }) => {
     if (!activity) return;
     await updateActivity(activity.id, { solutions, issues, materials });
     Alert.alert('Sucesso', 'Detalhes salvos!');
+    // Recarregar a atividade atualizada
+    const updatedActivity = activities.find(a => a.id === activity.id);
+    if (updatedActivity) {
+      setActivity(updatedActivity);
+      setSolutions(updatedActivity.solutions || '');
+      setIssues(updatedActivity.issues || '');
+      setMaterials(updatedActivity.materials || []);
+    }
   };
 
   if (!activity) {
