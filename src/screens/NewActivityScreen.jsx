@@ -9,10 +9,14 @@ import {
   TextInput,
   StatusBar,
   Alert,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS, SERVICE_TYPES, PRIORITIES, DEFAULT_HOURLY_RATES } from '../constants';
+
+const { height } = Dimensions.get('window');
 
 const NewActivityScreen = ({ navigation }) => {
   const { addActivity } = useActivities();
@@ -179,6 +183,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    height: Platform.OS === 'web' ? height - 50 : undefined,
   },
   scrollContent: {
     flexGrow: 1,

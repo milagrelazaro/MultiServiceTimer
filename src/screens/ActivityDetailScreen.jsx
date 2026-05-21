@@ -9,11 +9,15 @@ import {
   TextInput,
   StatusBar,
   Alert,
+  Platform,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
 import { COLORS } from '../constants';
 import { formatTime, calculateElapsedTime, formatCurrency, formatDate, calculateTotalTime } from '../utils/timer';
+
+const { height } = Dimensions.get('window');
 
 const ActivityDetailScreen = ({ route, navigation }) => {
   const { activityId } = route.params;
@@ -453,6 +457,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    height: Platform.OS === 'web' ? height - 50 : undefined,
   },
   scrollContent: {
     flexGrow: 1,
