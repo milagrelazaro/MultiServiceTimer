@@ -21,8 +21,6 @@ const SettingsScreen = ({ navigation }) => {
   const [settings, setSettings] = useState({
     userName: '',
     notificationsEnabled: true,
-    darkMode: false,
-    language: 'pt',
   });
 
   useEffect(() => {
@@ -55,20 +53,6 @@ const SettingsScreen = ({ navigation }) => {
     saveSettings(newSettings);
   };
 
-  const handleDarkModeToggle = () => {
-    const newSettings = { ...settings, darkMode: !settings.darkMode };
-    saveSettings(newSettings);
-    Alert.alert('Modo Escuro', 'Reinicie a aplicação para aplicar as mudanças');
-  };
-
-  const handleLanguageChange = () => {
-    Alert.alert('Idioma', 'Em breve: Suporte para múltiplos idiomas');
-  };
-
-  const handleSync = () => {
-    Alert.alert('Sincronização', 'Em breve: Sincronização com Firebase');
-  };
-
   const handleHelp = () => {
     Alert.alert('Ajuda', 'Versão 1.0.0\n\nContacte: support@multiservicetimer.com');
   };
@@ -88,11 +72,8 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   const settingsOptions = [
-    { icon: 'person-outline', title: 'Perfil', description: 'Gerir perfil do utilizador', action: () => Alert.alert('Perfil', `Nome: ${settings.userName || 'Não definido'}\n\nEm breve: Edição de perfil`) },
-    { icon: 'notifications-outline', title: 'Notificações', description: 'Configurar alertas', action: handleNotificationToggle, isToggle: true, toggleValue: settings.notificationsEnabled },
-    { icon: 'language-outline', title: 'Idioma', description: settings.language === 'pt' ? 'Português' : 'English', action: handleLanguageChange },
-    { icon: 'moon-outline', title: 'Modo Escuro', description: settings.darkMode ? 'Ativado' : 'Desativado', action: handleDarkModeToggle, isToggle: true, toggleValue: settings.darkMode },
-    { icon: 'cloud-outline', title: 'Sincronização', description: 'Em breve', action: handleSync },
+    { icon: 'person-outline', title: 'Perfil', description: 'Gerir perfil do utilizador', action: () => Alert.alert('Perfil', `Nome: ${settings.userName || 'Não definido'}\n\nEdite seu nome abaixo`) },
+    { icon: 'notifications-outline', title: 'Notificações', description: settings.notificationsEnabled ? 'Ativadas' : 'Desativadas', action: handleNotificationToggle, isToggle: true, toggleValue: settings.notificationsEnabled },
     { icon: 'help-circle-outline', title: 'Ajuda', description: 'FAQ e suporte', action: handleHelp },
     { icon: 'information-circle-outline', title: 'Sobre', description: 'Versão 1.0.0', action: handleAbout },
   ];
