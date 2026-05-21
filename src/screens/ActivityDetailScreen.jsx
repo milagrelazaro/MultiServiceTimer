@@ -454,12 +454,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+    ...Platform.select({
+      web: {
+        height: '100vh',
+      },
+      default: {},
+    }),
   },
   scrollView: {
     flex: 1,
     ...Platform.select({
       web: {
-        height: '100vh',
+        height: 'calc(100vh - 50px)',
         overflow: 'auto',
       },
       default: {},
