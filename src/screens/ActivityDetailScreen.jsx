@@ -139,9 +139,9 @@ const ActivityDetailScreen = ({ route, navigation }) => {
   const materialsCost = materials.reduce((sum, m) => sum + (m.cost * m.quantity), 0);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -376,7 +376,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -453,6 +453,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
   },
   errorText: {
