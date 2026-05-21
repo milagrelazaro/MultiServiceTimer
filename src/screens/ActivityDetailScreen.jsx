@@ -457,12 +457,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    ...Platform.select({
-      web: {
-        minHeight: '100vh',
-      },
-      default: {},
-    }),
   },
   scrollContent: {
     flexGrow: 1,
