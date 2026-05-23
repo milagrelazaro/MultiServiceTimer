@@ -27,6 +27,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
   const [solutions, setSolutions] = useState(activity?.solutions || '');
   const [issues, setIssues] = useState(activity?.issues || '');
   const [materials, setMaterials] = useState(activity?.materials || []);
+  const [ownMaterialCost, setOwnMaterialCost] = useState(activity?.ownMaterialCost || '');
   const [newMaterialName, setNewMaterialName] = useState('');
   const [newMaterialQty, setNewMaterialQty] = useState('');
   const [newMaterialCost, setNewMaterialCost] = useState('');
@@ -38,6 +39,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
       setSolutions(updatedActivity.solutions || '');
       setIssues(updatedActivity.issues || '');
       setMaterials(updatedActivity.materials || []);
+      setOwnMaterialCost(updatedActivity.ownMaterialCost || '');
     }
   }, [activities, activityId]);
 
@@ -68,6 +70,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
       solutions,
       issues,
       materials,
+      ownMaterialCost: ownMaterialCost ? parseFloat(ownMaterialCost) : undefined,
     });
 
     await completeActivity(activity.id);
@@ -119,7 +122,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
 
   const saveDetails = async () => {
     if (!activity) return;
-    await updateActivity(activity.id, { solutions, issues, materials });
+    await updateActivity(activity.id, { solutions, issues, materials, ownMaterialCost: ownMaterialCost ? parseFloat(ownMaterialCost) : undefined });
     Alert.alert('Sucesso', 'Detalhes salvos!');
     // Recarregar a atividade atualizada
     const updatedActivity = activities.find(a => a.id === activity.id);
@@ -128,6 +131,7 @@ const ActivityDetailScreen = ({ route, navigation }) => {
       setSolutions(updatedActivity.solutions || '');
       setIssues(updatedActivity.issues || '');
       setMaterials(updatedActivity.materials || []);
+      setOwnMaterialCost(updatedActivity.ownMaterialCost || '');
     }
   };
 
@@ -239,22 +243,10 @@ const ActivityDetailScreen = ({ route, navigation }) => {
             </Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Taxa horária:</Text>
-            <Text style={styles.infoValue}>{formatCurrency(activity.hourlyRate)}/hora</Text>
-          </View>
-
           {activity.estimatedBudget && (
             <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Orçamento estimado:</Text>
+              <Text style={styles.infoLabel}>Orçamento:</Text>
               <Text style={styles.infoValue}>{formatCurrency(activity.estimatedBudget)}</Text>
-            </View>
-          )}
-
-          {activity.totalCost && (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Custo total:</Text>
-              <Text style={[styles.infoValue, styles.costValue]}>{formatCurrency(activity.totalCost)}</Text>
             </View>
           )}
         </View>
@@ -345,6 +337,24 @@ const ActivityDetailScreen = ({ route, navigation }) => {
           <View style={styles.materialsTotal}>
             <Text style={styles.materialsTotalLabel}>Total materiais:</Text>
             <Text style={styles.materialsTotalValue}>{formatCurrency(materialsCost)}</Text>
+          </View>
+        </View>
+
+        {/* Gasto de Material Próprio */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Gasto de Material Próprio (MZN)</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="wallet-outline" size={20} color={COLORS.textSecondary} style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="0.00"
+              value={ownMaterialCost}
+              onChangeText={setOwnMaterialCost}
+              placeholderTextColor={COLORS.textSecondary}
+              keyboardType="decimal-pad"
+              editable={activity.status !== 'completed'}
+            />
+            <Text style={styles.currencySymbol}>MZN</Text>
           </View>
         </View>
 
@@ -687,6 +697,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.success,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: COLORS.text,
+  },
+  currencySymbol: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   pauseItem: {
     flexDirection: 'row',
