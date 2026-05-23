@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -26,11 +26,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "owner": "sixac",
     "extra": {
       "eas": {
-        "projectId": "b3e69af8-cf3d-4f54-966a-3f45e85f5b1c"
+        "projectId": "80e88390-4dc1-4b9c-8e89-bcd6dcdf6756"
       }
-    },
-    "owner": "sixmc"
+    }
   }
 }
