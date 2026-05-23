@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
-import { COLORS, SERVICE_TYPES, PRIORITIES, DEFAULT_HOURLY_RATES } from '../constants';
+import { COLORS, SERVICE_TYPES, PRIORITIES } from '../constants';
 
 const { height } = Dimensions.get('window');
 
@@ -32,8 +32,6 @@ const NewActivityScreen = ({ navigation }) => {
       return;
     }
 
-    const hourlyRate = DEFAULT_HOURLY_RATES[serviceType];
-
     await addActivity({
       technicianId: 'tech_1', // TODO: Get from auth
       serviceType,
@@ -43,7 +41,6 @@ const NewActivityScreen = ({ navigation }) => {
       estimatedBudget: estimatedBudget ? parseFloat(estimatedBudget) : undefined,
       status: 'in_progress',
       startedAt: Date.now(),
-      hourlyRate,
     });
 
     navigation.goBack();
@@ -145,12 +142,12 @@ const NewActivityScreen = ({ navigation }) => {
 
           {/* Orçamento Estimado */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Orçamento Estimado (opcional)</Text>
+            <Text style={styles.sectionTitle}>Orçamento (MZN)</Text>
             <View style={styles.inputContainer}>
               <Ionicons name="cash-outline" size={20} color={COLORS.textSecondary} style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="0.00"
+                placeholder="Defina o valor do orçamento"
                 value={estimatedBudget}
                 onChangeText={setEstimatedBudget}
                 placeholderTextColor={COLORS.textSecondary}
@@ -158,14 +155,6 @@ const NewActivityScreen = ({ navigation }) => {
               />
               <Text style={styles.currencySymbol}>MZN</Text>
             </View>
-          </View>
-
-          {/* Taxa Horária */}
-          <View style={styles.infoCard}>
-            <Ionicons name="information-circle" size={20} color={COLORS.primary} />
-            <Text style={styles.infoText}>
-              Taxa horária: {DEFAULT_HOURLY_RATES[serviceType].toLocaleString('pt-MZ')} MZN/hora
-            </Text>
           </View>
 
           {/* Botão Criar */}
