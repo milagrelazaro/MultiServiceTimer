@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,13 @@ import {
   Alert,
   Platform,
   Dimensions,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useActivities } from '../context/ActivityContext';
-import { COLORS, SERVICE_TYPES, PRIORITIES } from '../constants';
+import { COLORS, SERVICE_TYPES, PRIORITIES, STORAGE_KEYS } from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height } = Dimensions.get('window');
 
@@ -25,6 +28,24 @@ const NewActivityScreen = ({ navigation }) => {
   const [clientName, setClientName] = useState('');
   const [description, setDescription] = useState('');
   const [estimatedBudget, setEstimatedBudget] = useState('');
+  const [clients, setClients] = useState([]);
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [clientSearchQuery, setClientSearchQuery] = useState('');
+
+  const loadClients = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(STORAGE_KEYS.CLIENTS);
+      if (stored) {
+        setClients(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Error loading clients:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadClients();
+  }, []);
 
   const handleCreate = async () => {
     if (!description.trim()) {
@@ -111,16 +132,13 @@ const NewActivityScreen = ({ navigation }) => {
           {/* Cliente */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Cliente (opcional)</Text>
-            <View style={styles.inputContainer}>
+            <TouchableOpacity style={styles.inputContainer} onPress={() => setShowClientModal(true)}>
               <Ionicons name="person-outline" size={20} color={COLORS.textSecondary} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Nome do cliente"
-                value={clientName}
-                onChangeText={setClientName}
-                placeholderTextColor={COLORS.textSecondary}
-              />
-            </View>
+              <Text style={[styles.input, !clientName && styles.placeholderText]}>
+                {clientName || 'Selecionar cliente'}
+              </Text>
+              <Ionicons name="chevron-down" size={20} color={COLORS.textSecondary} />
+            </TouchableOpacity>
           </View>
 
           {/* Descrição */}
@@ -164,6 +182,76 @@ const NewActivityScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Modal de Seleção de Cliente */}
+      <Modal
+        visible={showClientModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowClientModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Selecionar Cliente</Text>
+              <TouchableOpacity onPress={() => setShowClientModal(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.searchContainer}>
+              <Ionicons name="search" size={20} color={COLORS.textSecondary} style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Buscar cliente..."
+                value={clientSearchQuery}
+                onChangeText={setClientSearchQuery}
+                placeholderTextColor={COLORS.textSecondary}
+              />
+            </View>
+
+            <FlatList
+              data={clients.filter(client =>
+                client.name.toLowerCase().includes(clientSearchQuery.toLowerCase()) ||
+                client.phone.includes(clientSearchQuery)
+              )}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.clientItem}
+                  onPress={() => {
+                    setClientName(item.name);
+                    setShowClientModal(false);
+                    setClientSearchQuery('');
+                  }}
+                >
+                  <View style={styles.clientAvatar}>
+                    <Text style={styles.clientAvatarText}>
+                      {item.name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                  <View style={styles.clientDetails}>
+                    <Text style={styles.clientName}>{item.name}</Text>
+                    <Text style={styles.clientPhone}>{item.phone}</Text>
+                  </View>
+                  {clientName === item.name && (
+                    <Ionicons name="checkmark-circle" size={24} color={COLORS.primary} />
+                  )}
+                </TouchableOpacity>
+              )}
+              ListEmptyComponent={
+                <View style={styles.emptyState}>
+                  <Ionicons name="people-outline" size={48} color={COLORS.textSecondary} />
+                  <Text style={styles.emptyText}>
+                    {clientSearchQuery ? 'Nenhum cliente encontrado' : 'Nenhum cliente cadastrado'}
+                  </Text>
+                </View>
+              }
+              style={styles.clientList}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -277,11 +365,106 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: COLORS.text,
   },
+  placeholderText: {
+    color: COLORS.textSecondary,
+  },
   currencySymbol: {
     fontSize: 14,
     color: COLORS.textSecondary,
     fontWeight: '600',
     marginLeft: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    margin: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: COLORS.text,
+  },
+  clientList: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  clientItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.card,
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  clientAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  clientAvatarText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  clientDetails: {
+    flex: 1,
+  },
+  clientName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: 4,
+  },
+  clientPhone: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
+    marginTop: 12,
   },
   textAreaContainer: {
     backgroundColor: COLORS.card,
