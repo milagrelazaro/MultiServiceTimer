@@ -159,12 +159,17 @@ export const ActivityProvider = ({ children }) => {
     const completedAt = Date.now();
     const totalTime = activity.startedAt ? (completedAt - activity.startedAt - totalPausedTime) / 1000 : 0;
 
+    // Calcular custo total: orçamento + materiais + gasto de material próprio
+    const materialsCost = (activity.materials || []).reduce((sum, m) => sum + (m.cost || 0), 0);
+    const totalCost = (activity.estimatedBudget || 0) + materialsCost + (activity.ownMaterialCost || 0);
+
     const updatedActivity = {
       ...activity,
       status: 'completed',
       completedAt,
       totalPausedTime,
       pauses,
+      totalCost,
     };
     
     await updateActivity(activityId, updatedActivity);
